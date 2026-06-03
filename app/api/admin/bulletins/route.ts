@@ -1,12 +1,13 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import { requireRole } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
+import { redirectUrl } from '@/lib/site-url';
 
 export async function POST(request: NextRequest) {
   const user = await requireRole('ADMIN').catch(() => null);
 
   if (!user) {
-    return NextResponse.redirect(new URL('/login', request.url));
+    return NextResponse.redirect(redirectUrl(request, '/login'));
   }
 
   const formData = await request.formData();
@@ -15,7 +16,7 @@ export async function POST(request: NextRequest) {
   const isActive = formData.get('isActive') === 'on';
 
   if (!title || !body) {
-    return NextResponse.redirect(new URL('/dashboard/admin?error=bulletin', request.url));
+    return NextResponse.redirect(redirectUrl(request, '/dashboard/admin?error=bulletin'));
   }
 
   await prisma.bulletin.create({
@@ -27,5 +28,5 @@ export async function POST(request: NextRequest) {
     }
   });
 
-  return NextResponse.redirect(new URL('/dashboard/admin?created=bulletin', request.url));
+  return NextResponse.redirect(redirectUrl(request, '/dashboard/admin?created=bulletin'));
 }

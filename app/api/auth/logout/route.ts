@@ -1,7 +1,8 @@
 import { NextResponse, type NextRequest } from 'next/server';
+import { redirectUrl } from '@/lib/site-url';
 
 export async function POST(request: NextRequest) {
-  const response = NextResponse.redirect(new URL('/login', request.url));
+  const response = NextResponse.redirect(redirectUrl(request, '/login'));
 
   response.cookies.set({
     name: 'session',

@@ -2,6 +2,7 @@ import bcrypt from 'bcryptjs';
 import { NextResponse, type NextRequest } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { signSession } from '@/lib/session';
+import { redirectUrl } from '@/lib/site-url';
 
 export async function POST(request: NextRequest) {
   const formData = await request.formData();
@@ -11,13 +12,13 @@ export async function POST(request: NextRequest) {
   const user = await prisma.user.findUnique({ where: { email } });
 
   if (!user) {
-    return NextResponse.redirect(new URL('/login?error=1', request.url));
+    return NextResponse.redirect(redirectUrl(request, '/login?error=1'));
   }
 
   const passwordMatches = await bcrypt.compare(password, user.passwordHash);
 
   if (!passwordMatches) {
-    return NextResponse.redirect(new URL('/login?error=1', request.url));
+    return NextResponse.redirect(redirectUrl(request, '/login?error=1'));
   }
 
   const token = await signSession({
@@ -27,7 +28,7 @@ export async function POST(request: NextRequest) {
     role: user.role
   });
 
-  const response = NextResponse.redirect(new URL(user.role === 'ADMIN' ? '/dashboard/admin' : '/dashboard', request.url));
+  const response = NextResponse.redirect(redirectUrl(request, user.role === 'ADMIN' ? '/dashboard/admin' : '/dashboard'));
 
   response.cookies.set({
     name: 'session',

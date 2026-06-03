@@ -22,6 +22,7 @@ Minimal Next.js + MySQL starter for a shipping document workflow.
 ## Local setup
 
 1. Copy `.env.example` to `.env` and set `DATABASE_URL` and `JWT_SECRET`.
+	Set `APP_URL` to your public VPS IP or domain, for example `http://143.198.222.31`.
 2. Install dependencies with `npm install`.
 3. Run `npx prisma migrate dev`.
 4. Seed sample users with `npm run seed`.
@@ -57,6 +58,7 @@ For a fresh Ubuntu/Debian VPS, use this flow.
 	nano .env
 	```
 5. Create the MySQL database and user, then set `DATABASE_URL` in `.env`.
+	Also set `APP_URL` to your VPS IP or domain so redirects and links stay public.
 6. Install app dependencies:
 	```bash
 	npm install

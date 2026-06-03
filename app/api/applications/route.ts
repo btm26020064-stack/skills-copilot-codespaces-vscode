@@ -4,6 +4,7 @@ import { requireUser } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import { generateApplicationPdf } from '@/lib/pdf';
 import { saveFile } from '@/lib/storage';
+import { redirectUrl } from '@/lib/site-url';
 
 const fileFields: Array<[string, DocumentType]> = [
   ['arrivalNotice', 'ARRIVAL_NOTICE'],
@@ -17,7 +18,7 @@ export async function POST(request: NextRequest) {
   const user = await requireUser().catch(() => null);
 
   if (!user) {
-    return NextResponse.redirect(new URL('/login', request.url));
+    return NextResponse.redirect(redirectUrl(request, '/login'));
   }
 
   const formData = await request.formData();
@@ -30,7 +31,7 @@ export async function POST(request: NextRequest) {
   const remarks = String(formData.get('remarks') || '').trim() || null;
 
   if (!companyName || !vesselName || !(slotType === 'NEW_SHIP' || slotType === 'PC')) {
-    return NextResponse.redirect(new URL('/dashboard?error=application', request.url));
+    return NextResponse.redirect(redirectUrl(request, '/dashboard?error=application'));
   }
 
   const application = await prisma.application.create({
@@ -89,5 +90,5 @@ export async function POST(request: NextRequest) {
     }
   });
 
-  return NextResponse.redirect(new URL('/dashboard?submitted=application', request.url));
+  return NextResponse.redirect(redirectUrl(request, '/dashboard?submitted=application'));
 }

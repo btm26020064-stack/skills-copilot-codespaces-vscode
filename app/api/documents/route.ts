@@ -3,6 +3,7 @@ import { NextResponse, type NextRequest } from 'next/server';
 import { requireUser } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import { saveFile } from '@/lib/storage';
+import { redirectUrl } from '@/lib/site-url';
 
 const allowedTypes = new Set<DocumentType>(['ARRIVAL_NOTICE', 'CREW_LIST', 'SAILING_PERMIT', 'MANIFEST', 'K11', 'OTHER']);
 
@@ -10,7 +11,7 @@ export async function POST(request: NextRequest) {
   const user = await requireUser().catch(() => null);
 
   if (!user) {
-    return NextResponse.redirect(new URL('/login', request.url));
+    return NextResponse.redirect(redirectUrl(request, '/login'));
   }
 
   const formData = await request.formData();
@@ -19,7 +20,7 @@ export async function POST(request: NextRequest) {
   const file = formData.get('file');
 
   if (!(file instanceof File) || !allowedTypes.has(type)) {
-    return NextResponse.redirect(new URL('/dashboard?error=document', request.url));
+    return NextResponse.redirect(redirectUrl(request, '/dashboard?error=document'));
   }
 
   const uploaded = await saveFile('documents', file);
@@ -34,5 +35,5 @@ export async function POST(request: NextRequest) {
     }
   });
 
-  return NextResponse.redirect(new URL('/dashboard?submitted=document', request.url));
+  return NextResponse.redirect(redirectUrl(request, '/dashboard?submitted=document'));
 }
