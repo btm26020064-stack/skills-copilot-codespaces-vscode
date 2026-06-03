@@ -1,0 +1,10 @@
+node_modules
+.next
+.ipynb_checkpoints
+.env
+.env.local
+dist
+coverage
+public/uploads/*
+!public/uploads/.gitkeep
+prisma/dev.db
