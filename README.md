@@ -37,6 +37,8 @@ Minimal Next.js + MySQL starter for a shipping document workflow.
 
 For a fresh Ubuntu/Debian VPS, use this flow.
 
+If you want a single automated install, use [scripts/vps-install.sh](scripts/vps-install.sh).
+
 1. Install system packages:
 	```bash
 	sudo apt update
